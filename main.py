@@ -21,7 +21,7 @@ def save_roles(data):
 roles = load_roles()
 
 # ---- Bot設定 ----
-intents = discord.Intents.default()
+intents = discord.Intents.default
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
@@ -31,20 +31,20 @@ async def on_ready():
     print(f"ログイン完了: {client.user}")
 
 # ---- 役職指定キャラくじ ----
-@tree.command(name="rolekuji", description="役職を指定してキャラくじを引く")
-@app_commands.describe(role="役職名を入力")
+@tree.command(name="role_herokuji", description="ロールを指定してヒーローくじを引く")
+@app_commands.describe(role="ロール名を入力")
 async def rolekuji(interaction: discord.Interaction, role: str):
     if role not in roles or not roles[role]:
-        await interaction.response.send_message("その役職にキャラがいないよ")
+        await interaction.response.send_message("そのロールにヒーローがいないよ")
         return
 
     character = random.choice(roles[role])
     await interaction.response.send_message(
-        f"🎯 **{role}** から選ばれたキャラは…\n👉 **{character}**！"
+        f"🎯 **{role}** から選ばれたヒーローは…\n👉 **{character}**！"
     )
 
 # ---- 全キャラくじ ----
-@tree.command(name="character", description="全キャラクターからランダムで1人選ぶ")
+@tree.command(name="herokuji", description="全ヒーローからランダムで1人選ぶ")
 async def character(interaction: discord.Interaction):
     all_characters = []
     for char_list in roles.values():
@@ -52,23 +52,23 @@ async def character(interaction: discord.Interaction):
 
     selected = random.choice(all_characters)
     await interaction.response.send_message(
-        f"🎲 全キャラくじの結果は…\n👉 **{selected}**！"
+        f"🎲 全ヒーローくじの結果は…\n👉 **{selected}**！"
     )
 
 # ---- 役職くじ ----
-@tree.command(name="role_only", description="役職だけをランダムで選ぶ")
+@tree.command(name="rolekuji", description="ロールだけをランダムで選ぶ")
 async def role_only(interaction: discord.Interaction):
     role = random.choice(list(roles.keys()))
     await interaction.response.send_message(
-        f"🧩 役職くじの結果は…\n👉 **{role}**！"
+        f"🧩 ロールくじの結果は…\n👉 **{role}**！"
     )
 
 # ---- キャラ追加（保存される）----
-@tree.command(name="add_character", description="指定した役職にキャラクターを追加する")
-@app_commands.describe(role="役職名", name="キャラクター名")
-async def add_character(interaction: discord.Interaction, role: str, name: str):
+@tree.command(name="add_hero", description="指定したロールにヒーローを追加する")
+@app_commands.describe(role="ロール名", name="ヒーロー名")
+async def add_hero(interaction: discord.Interaction, role: str, name: str):
     if role not in roles:
-        await interaction.response.send_message("その役職は存在しないよ", ephemeral=True)
+        await interaction.response.send_message("そのロールは存在しないよ", ephemeral=True)
         return
 
     roles[role].append(name)
